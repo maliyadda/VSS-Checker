@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VSS Check"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#10181e">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>VSS Check</title>
+<style>
+:root{--bg:#f2f5f7;--card:#fff;--ink:#10181e;--mute:#566570;--line:#cfd8de;--ok:#0b7a4b;--warn:#9a5700;--bad:#b3261e;--acc:#e8b030;color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1115;--card:#141d24;--ink:#eef3f6;--mute:#93a3ad;--line:#2a3945;--ok:#48d597;--warn:#f0b24a;--bad:#ff8a80}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:640px;margin:0 auto;padding:12px 14px 40px}
+h1{font-size:1.25rem;margin:8px 0 2px}h2{font-size:1rem;margin:0 0 8px}
+.sub{color:var(--mute);font-size:.85rem;margin:0 0 12px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin:0 0 12px}
+label{display:block;font-size:.85rem;color:var(--mute);margin:8px 0 2px}
+input,select,button{font:inherit;width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+input[type=checkbox]{width:auto;min-height:0;margin-right:8px}.chk{display:flex;align-items:center;color:var(--ink);font-size:.95rem}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{background:var(--ink);color:var(--bg);font-weight:600;border:0;margin-top:10px}button.alt{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.verdict{border-left:8px solid var(--line);padding:6px 0 6px 12px;margin:8px 0}.verdict b{font-size:1.15rem}
+.ok{border-color:var(--ok)}.warn{border-color:var(--warn)}.bad{border-color:var(--bad)}
+.big{font-size:2.4rem;font-weight:700;line-height:1.1}.big small{font-size:1rem;font-weight:500;color:var(--mute)}
+.msg{font-size:.9rem;padding:8px 10px;border-radius:8px;margin:8px 0;border:1px solid var(--bad);color:var(--bad)}.msg.w{border-color:var(--warn);color:var(--warn)}
+.mute{color:var(--mute);font-size:.85rem}svg{width:100%;height:auto;display:block;background:var(--bg);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.85rem}td,th{border-bottom:1px solid var(--line);padding:4px;text-align:left}
+details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600}
+</style></head><body><main>
+<h1>VSS check</h1><p class="sub">Screening aid based on ICAO Doc 8168 Vol II, Part I, Sec 4, Ch 5 (5.4.6). Not a certified assessment.</p>
+
+<section><h2>Runway and procedure</h2>
+<div class="row"><div><label for="ap">Aerodrome</label><select id="ap"></select></div><div><label for="rw">Runway end</label><select id="rw"></select></div></div>
+<div id="flags"></div>
+<label for="type">Approach type</label>
+<select id="type"><option value="npa">NPA (non-precision)</option><option value="apvb">APV Baro</option><option value="apvg">APV with geometric guidance</option><option value="pa">PA (ILS)</option></select>
+<label class="chk"><input type="checkbox" id="loc">LOC / LOC look-alike lateral guidance, aligned with centreline</label>
+<div class="row"><div><label for="och">OCH above THR (m) *</label><input id="och" inputmode="decimal" placeholder="enter value"></div><div><label for="rdh">RDH (m)</label><input id="rdh" inputmode="decimal" value="15"></div></div>
+<div class="row"><div><label for="theta">VPA (°)</label><input id="theta" inputmode="decimal" value="3"></div><div><label for="phi">OCS slope φ (°)</label><input id="phi" inputmode="decimal" value="2"></div></div>
+<div id="coldwrap" hidden><label for="cold">Minimum cold-temperature VPA (°)</label><input id="cold" inputmode="decimal"></div>
+<details><summary>Advanced values</summary>
+<div class="row"><div><label for="strip">Strip width (m)</label><input id="strip" inputmode="decimal"></div><div><label for="inner">Annex 14 inner width (m)</label><input id="inner" inputmode="decimal"></div></div>
+<div class="row"><div><label for="rwyw">Runway width (m)</label><input id="rwyw" inputmode="decimal"></div><div><label for="origin">VSS slope starts at</label><select id="origin"><option value="start">60 m point (assumed)</option><option value="thr">threshold</option></select></div></div>
+<label class="chk"><input type="checkbox" id="override">Runway data verified: calculate even if the designator check fails</label></details></section>
+
+<section><h2>Obstacle position</h2>
+<button id="gps">Use my position (GPS)</button>
+<div class="row"><div><label for="lat">Latitude</label><input id="lat" placeholder="7.1700 or 071009.08N"></div><div><label for="lon">Longitude</label><input id="lon" placeholder="79.8750 or 0795228.51E"></div></div>
+<label for="ground">Ground elevation at obstacle (m AMSL) *</label><input id="ground" inputmode="decimal" placeholder="enter surveyed value">
+<button class="alt" id="calc">Check position</button></section>
+
+<section id="out" hidden aria-live="polite"></section>
+<section id="listbox" hidden><h2>Saved points</h2><div style="overflow-x:auto"><table id="list"></table></div><button class="alt" id="csv">Export CSV</button><button class="alt" id="clear">Clear list</button></section>
+<p class="mute">Phone GPS height is not used. Horizontal GPS error is typically several metres: results near a surface edge are reported as uncertain.</p>
+</main><script type="module" src="app.js"></script></body></html>
