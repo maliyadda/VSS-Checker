@@ -1,0 +1,36 @@
+{
+ "_source": "database_for_app2_e009b7.csv as supplied. Thresholds must be WGS-84. Verify every value against the AIP/survey before operational use.",
+ "aerodromes": [
+  {
+   "icao": "VCBI",
+   "name": "Bandaranaike International Airport",
+   "code": "4 E",
+   "inner": 120,
+   "strip": 200,
+   "procedures": "ILS, VOR, RNP",
+   "flags": [
+    "Strip width 200 m as supplied - verify against Annex 14 (code 4 instrument runway)",
+    "Inner approach width 120 m as supplied - verify against Annex 14 Table 4-1"
+   ],
+   "runways": [
+    { "id": "22", "lat": "071135.68N", "lon": "0795334.87E", "elev": 8.32, "width": 45, "opp": "04" },
+    { "id": "04", "lat": "071009.08N", "lon": "0795228.51E", "elev": 7.56, "width": 45, "opp": "22" }
+   ]
+  },
+  {
+   "icao": "VCRI",
+   "name": "VCRI",
+   "code": "4 F",
+   "inner": 120,
+   "strip": 300,
+   "procedures": "ILS, VOR, RNP",
+   "flags": [
+    "Strip width 300 m and inner width 120 m as supplied - verify"
+   ],
+   "runways": [
+    { "id": "23", "lat": "061743.62N", "lon": "0810807.84E", "elev": 48.5, "width": 60, "opp": "05" },
+    { "id": "05", "lat": "061624.53N", "lon": "0810645.88E", "elev": 41.5, "width": 60, "opp": "23" }
+   ]
+  }
+ ]
+}
